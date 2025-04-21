@@ -1,0 +1,342 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: advanced-chat
+  name: 带记忆的聊天助手
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/deepseek:0.0.5@fd6efd37c2a931911de8ab9ca3ba2da303bef146d45ee87ad896b04b36d09403
+kind: app
+version: 0.1.5
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: http-request
+      id: 1745076789619-source-1745076799683-target
+      source: '1745076789619'
+      sourceHandle: source
+      target: '1745076799683'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: http-request
+        targetType: llm
+      id: 1745076799683-source-llm-target
+      source: '1745076799683'
+      sourceHandle: source
+      target: llm
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: start
+        targetType: http-request
+      id: 1745076789619-source-17451124347100-target
+      source: '1745076789619'
+      sourceHandle: source
+      target: '17451124347100'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: http-request
+        targetType: http-request
+      id: 17451124347100-source-17451133667470-target
+      source: '17451124347100'
+      sourceHandle: source
+      target: '17451133667470'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: answer
+      id: llm-source-answer-target
+      source: llm
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 开始
+        type: start
+        variables:
+        - label: memobase_user_id
+          max_length: 100
+          options: []
+          required: true
+          type: text-input
+          variable: memobase_user_id
+      height: 89
+      id: '1745076789619'
+      position:
+        x: 30
+        y: 277
+      positionAbsolute:
+        x: 30
+        y: 277
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        memory:
+          query_prompt_template: '{{#sys.query#}}'
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+            size: 10
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: deepseek-chat
+          provider: langgenius/deepseek/deepseek
+        prompt_template:
+        - id: 3278fcb5-7b4c-49a9-860f-0c45736689e8
+          role: system
+          text: '你是个有用的助手
+
+            '
+        - role: user
+          text: '用户基础信息
+
+            {{#1745076799683.body#}}'
+        selected: false
+        title: LLM
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 89
+      id: llm
+      position:
+        x: 638
+        y: 277
+      positionAbsolute:
+        x: 638
+        y: 277
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#llm.text#}}'
+        desc: ''
+        selected: false
+        title: 直接回复
+        type: answer
+        variables: []
+      height: 104
+      id: answer
+      position:
+        x: 1153.142857142857
+        y: 291.2857142857143
+      positionAbsolute:
+        x: 1153.142857142857
+        y: 291.2857142857143
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        authorization:
+          config:
+            api_key: secret
+            type: bearer
+          type: api-key
+        body:
+          data: []
+          type: none
+        desc: ''
+        headers: ''
+        method: get
+        params: ''
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 100
+        selected: false
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: 获取用户信息
+        type: http-request
+        url: http://192.168.100.195:8019/api/v1/users/profile/{{#1745076789619.memobase_user_id#}}
+        variables: []
+      height: 154
+      id: '1745076799683'
+      position:
+        x: 334
+        y: 277
+      positionAbsolute:
+        x: 334
+        y: 277
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        authorization:
+          config:
+            api_key: secret
+            type: bearer
+          type: api-key
+        body:
+          data:
+          - id: key-value-284
+            key: ''
+            type: text
+            value: '{
+
+              "blob_type":"chat","blob_data":{"messages":[{"role":"user","content":"{{#sys.query#}}"}]
+
+              }}'
+          type: json
+        desc: ''
+        headers: Content-Type:application/json
+        method: post
+        params: ''
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 100
+        selected: false
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: 插入聊天数据
+        type: http-request
+        url: http://192.168.100.195:8019/api/v1/blobs/insert/{{#1745076789619.memobase_user_id#}}
+        variables: []
+      height: 154
+      id: '17451124347100'
+      position:
+        x: 349.14285714285745
+        y: 592.5714285714287
+      positionAbsolute:
+        x: 349.14285714285745
+        y: 592.5714285714287
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        authorization:
+          config:
+            api_key: secret
+            type: bearer
+          type: api-key
+        body:
+          data: []
+          type: none
+        desc: ''
+        headers: ''
+        method: post
+        params: ''
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 100
+        selected: false
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: 刷新数据
+        type: http-request
+        url: http://192.168.100.195:8019/api/v1/users/buffer/{{#1745076789619.memobase_user_id#}}/chat
+        variables: []
+      height: 154
+      id: '17451133667470'
+      position:
+        x: 668.7142857142853
+        y: 584.0000000000001
+      positionAbsolute:
+        x: 668.7142857142853
+        y: 584.0000000000001
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: 106.03496159419637
+      y: -18.378051455203376
+      zoom: 0.745379259336839
